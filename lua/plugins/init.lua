@@ -73,7 +73,11 @@ return {
     branch = "0.1.x",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+        enabled = vim.fn.executable("make") == 1  -- Only enable if make is available
+      },
       "nvim-telescope/telescope-file-browser.nvim",
     },
     config = function()
@@ -81,12 +85,32 @@ return {
         extensions = {
           file_browser = {
             theme = "ivy",
-            -- disables netrw and use telescope-file-browser in its place
             hijack_netrw = true,
           },
         },
       })
-      require("telescope").load_extension("file_browser")
+      -- Load extensions safely
+      local function load_extension(name)
+        local ok = pcall(require("telescope").load_extension, name)
+        if not ok then
+          vim.notify("Failed to load telescope extension: " .. name, vim.log.levels.WARN)
+        end
+      end
+      
+      load_extension("file_browser")
+      -- Only load fzf if the native library exists
+      if vim.fn.filereadable(vim.fn.stdpath("data") .. "/lazy/telescope-fzf-native.nvim/build/libfzf.so") == 1 then
+        load_extension("fzf")
+      end
     end,
+  },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = {
+        "vim", "lua", "vimdoc",
+        "html", "css", "cpp", "c"
+      },
+    },
   },
 }

@@ -98,3 +98,8 @@ vim.api.nvim_create_user_command('GoModInit', function(opts)
     vim.fn.system('go mod init ' .. module_name)
     print('Initialized Go module: ' .. module_name)
 end, { nargs = '?' })
+
+-- Add these to your existing mappings
+map("n", "<leader>ch", "<cmd>ClangdSwitchSourceHeader<cr>", { desc = "Switch between source/header" })
+map("n", "<leader>ct", "<cmd>ClangdTypeHierarchy<cr>", { desc = "Show type hierarchy" })
+map("n", "<leader>cs", "<cmd>ClangdSymbolInfo<cr>", { desc = "Show symbol info" })

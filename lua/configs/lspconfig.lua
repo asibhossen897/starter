@@ -42,3 +42,43 @@ lspconfig.gopls.setup {
     },
   },
 }
+
+-- Custom clangd configuration for single-file development
+lspconfig.clangd.setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  cmd = {
+    "clangd",
+    "--background-index",
+    "--clang-tidy",
+    "--completion-style=detailed",
+    "--header-insertion=iwyu",
+    "--suggest-missing-includes",
+    "--all-scopes-completion",
+    "--pch-storage=memory",
+    "--enable-config",
+    "--fallback-style=Google",
+    "--compile-commands-dir=.",  -- Look for compile_commands.json in current directory
+    "--offset-encoding=utf-16",  -- Fixes some encoding issues
+    "--header-insertion-decorators", -- Better header insertion
+    "-j=4",  -- Number of workers
+    "--query-driver=/usr/bin/g++", -- Use system g++ for includes
+  },
+  init_options = {
+    usePlaceholders = true,
+    completeUnimported = true,
+    clangdFileStatus = true,
+    semanticHighlighting = true,
+    fallbackFlags = {  -- Default compile flags for single files
+      "-std=c++17",
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-I.",  -- Include current directory
+      "-I/usr/include",  -- System includes
+      "-I/usr/local/include",
+    },
+  },
+  filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
+}

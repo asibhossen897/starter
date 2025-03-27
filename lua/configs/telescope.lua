@@ -16,7 +16,7 @@ function M.setup()
     },
   })
 
-  telescope.load_extension("fzf")
+  -- Don't try to load fzf here, it's now handled in the plugin setup
 end
 
 return M

@@ -12,3 +12,8 @@ o.tabstop = 4
 o.smartindent = true
 o.number = true
 o.relativenumber = true
+
+-- Disable swap file
+o.swapfile = false
+o.backup = false
+o.writebackup = false
